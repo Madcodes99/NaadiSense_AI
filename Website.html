@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NaadiSense AI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Theme: White, Off-White, Cream, Light Grey */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+            background-color: #ffffff; /* White background */
+            margin: 0;
+            padding: 0;
+            color: #1d1d1f;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            max-width: 1200px;
+            margin: 0 auto;
+            left: 0;
+            right: 0;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+        }
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1d1d1f;
+            background: linear-gradient(90deg, #ffffff 0%, #d2d2d7 100%);
+            padding: 2px 10px;
+            border-radius: 5px;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #6e6e73;
+            font-size: 18px;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        nav a:hover {
+            color: #0071e3;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #0071e3;
+            transition: width 0.3s;
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Sections */
+        section {
+            padding: 20px 40px; /* Reduced padding to minimize gap */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background-color: #ffffff;
+        }
+        h2 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1d1d1f;
+        }
+        p {
+            font-size: 18px;
+            color: #6e6e73;
+            max-width: 700px;
+        }
+
+        /* Landing Section */
+        #landing {
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+            background-color: #ffffff;
+            color: #1d1d1f;
+            padding: 250px 60px 40px; /* Adjusted padding to reduce gap */
+        }
+        .landing-content {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        .landing-text {
+            flex: 1;
+            padding-right: 20px;
+            max-width: 50%;
+        }
+        .landing-text h1 {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+            line-height: 1.2;
+        }
+        .landing-text p {
+            font-size: 20px;
+            color: #6e6e73;
+            max-width: 500px;
+            margin: 0;
+        }
+        .auth-container {
+            flex: 1;
+            background-color: #f5f5f7;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 50%;
+            margin-top: 20px;
+        }
+        .auth-tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .auth-tabs button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            color: #6e6e73;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .auth-tabs button.active {
+            color: #0071e3;
+            border-bottom: 2px solid #0071e3;
+        }
+        .auth-form {
+            display: none;
+        }
+        .auth-form.active {
+            display: block;
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #d2d2d7;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .auth-form input:focus {
+            border-color: #0071e3;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+        .auth-form button {
+            width: 100%;
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .auth-form button:hover {
+            background-color: #005bb5;
+        }
+
+        /* ECG Section */
+        #ecg-section {
+            padding: 40px 20px;
+            background-color: #ffffff;
+            overflow: hidden;
+            position: relative;
+            height: 100px; /* Fixed height for the ECG line */
+        }
+        .ecg-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .ecg-line {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2000px; /* Long width for scrolling effect */
+            height: 2px;
+            background: none;
+        }
+        .ecg-path {
+            fill: none;
+            stroke: #0071e3;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        /* Why NaadiSense AI Section */
+        #why-naadisense {
+            background-color: #ffffff;
+        }
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin-top: 40px;
+        }
+        .why-card {
+            background-color: #f5f5f7;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .why-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .why-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 15px;
+        }
+        .why-card img {
+            width: 100%;
+            max-width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .why-card p {
+            font-size: 16px;
+            color: #6e6e73;
+            max-width: 100%;
+        }
+
+        /* Webcam Section */
+        button {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 980px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        button:hover {
+            background-color: #005bb5;
+            transform: scale(1.05);
+        }
+        video {
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            margin-top: 30px;
+            background-color: #000;
+            width: 640px;
+            height: 480px;
+        }
+
+        /* Studies Section */
+        .studies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1000px;
+            margin-top: 30px;
+        }
+        .study-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Contact Section */
+        #contact {
+            background-color: #ffffff;
+        }
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1000px;
+            justify-content: center;
+        }
+        .contact-form {
+            background-color: #f5f5f7;
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 350px;
+        }
+        .form-control {
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 0.25rem rgba(0, 113, 227, 0.25);
+            outline: none;
+        }
+        .form-control::placeholder {
+            color: #6e6e73;
+        }
+        .contact-info {
+            background-color: #f5f5f7;
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 350px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .contact-icon {
+            font-size: 1.5rem;
+            color: #0071e3;
+            margin-right: 1rem;
+            min-width: 40px;
+        }
+
+        /* GSAP Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            nav {
+                margin-top: 10px;
+                gap: 15px;
+            }
+            .logo-text {
+                font-size: 24px;
+            }
+            .logo-icon {
+                width: 30px;
+                height: 30px;
+            }
+            video {
+                width: 100%;
+                height: auto;
+            }
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+            #landing {
+                flex-direction: column;
+                padding: 120px 20px 20px;
+            }
+            .landing-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .landing-text {
+                margin-bottom: 30px;
+                max-width: 100%;
+            }
+            .landing-text h1 {
+                font-size: 48px;
+            }
+            .auth-container {
+                max-width: 100%;
+                width: 100%;
+                margin-top: 0;
+            }
+            #ecg-section {
+                padding: 20px 10px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="#0071e3" />
+                <path d="M30,40 Q50,20 70,40 T70,60 Q50,80 30,60 T30,40" fill="none" stroke="#ffffff" stroke-width="5" />
+                <circle cx="50" cy="50" r="10" fill="#ffffff" />
+            </svg>
+            <span class="logo-text">NaadiSense AI</span>
+        </div>
+        <nav>
+            <a href="#landing">Home</a>
+            <a href="#why-naadisense">Why NaadiSense</a>
+            <a href="#webcam">Scan</a>
+            <a href="#studies">Studies</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Landing Section -->
+    <section id="landing" class="fade-up">
+        <div class="landing-content">
+            <div class="landing-text">
+                <h1>Unlock Your Pulse, Reveal Your Health</h1>
+                <p>Welcome to NaadiSense AI, where cutting-edge technology meets health innovation. Monitor your pulse non-invasively using just your webcam and gain AI-powered insights into your well-being.</p>
+            </div>
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="tab-button active" onclick="showForm('login')">Login</button>
+                    <button class="tab-button" onclick="showForm('signup')">Signup</button>
+                </div>
+                <div id="login-form" class="auth-form active">
+                    <form>
+                        <input type="email" placeholder="Email" required>
+                        <input type="password" placeholder="Password" required>
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+                <div id="signup-form" class="auth-form">
+                    <form>
+                        <input type="text" placeholder="Full Name" required>
+                        <input type="email" placeholder="Email" required>
+                        <input type="password" placeholder="Password" required>
+                        <button type="submit">Signup</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ECG Section -->
+    <section id="ecg-section" class="fade-up">
+        <div class="ecg-container">
+            <svg class="ecg-line" width="2000" height="100" viewBox="0 0 2000 100">
+                <path class="ecg-path" d="M 0 50 L 100 50 Q 150 30 200 50 T 300 50 Q 350 70 400 50 T 500 50 Q 550 30 600 50 T 700 50 Q 750 70 800 50 T 900 50 Q 950 30 1000 50 T 1100 50 Q 1150 70 1200 50 T 1300 50 Q 1350 30 1400 50 T 1500 50 Q 1550 70 1600 50 T 1700 50 Q 1750 30 1800 50 T 1900 50 L 2000 50" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- Why NaadiSense AI Section -->
+    <section id="why-naadisense" class="fade-up">
+        <h2>Why <span style="color: #0071e3;">NaadiSense AI</span></h2>
+        <div class="why-grid">
+            <div class="why-card fade-up">
+                <h3>Non-Invasive Monitoring</h3>
+                <img src="https://m.media-amazon.com/images/I/61OoHjPsnIL._AC_UF1000,1000_QL80_.jpg" alt="Non-Invasive Monitoring" onerror="this.src='https://picsum.photos/200/150';">
+                <p>Utilizes your webcam to measure pulse signals without the need for wearables or invasive devices, making health monitoring accessible and convenient.</p>
+            </div>
+            <div class="why-card fade-up">
+                <h3>AI-Powered Insights</h3>
+                <img src="https://www.quytech.com/assets/images/portfolio/ai/ai-based-marketing-analysis.jpg" alt="AI-Powered Insights" onerror="this.src='https://picsum.photos/200/150';">
+                <p>Analyzes subtle light changes captured by your webcam to provide accurate insights into heart rate, stress levels, and more, powered by advanced AI algorithms.</p>
+            </div>
+            <div class="why-card fade-up">
+                <h3>Innovative Technology</h3>
+                <img src="https://www.eschoolnews.com/files/2024/12/k-12-tech-innovation-news.jpeg" alt="Innovative Technology" onerror="this.src='https://picsum.photos/200/150';">
+                <p>Developed for a hackathon, NaadiSense AI showcases cutting-edge health technology that pushes the boundaries of what’s possible with everyday devices.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Webcam Section -->
+    <section id="webcam" class="fade-up">
+        <h2>Pulse Scan</h2>
+        <p>Place your finger over your webcam and click below to start.</p>
+        <button onclick="startScan()">Start Scan</button>
+        <video id="video" autoplay></video>
+    </section>
+
+<!-- Studies Section -->
+<section id="studies" class="fade-up">
+    <h2>Research & Technology</h2>
+    <div class="studies-grid">
+        <div class="study-card fade-up">
+            <h3>PPG Basics</h3>
+            <p>Photoplethysmography (PPG) uses light to measure blood volume changes in tissues. By illuminating the skin with a light source (e.g., red, infrared, or green LED), PPG detects variations in light absorption or reflection as blood volume fluctuates with each heartbeat. This produces a waveform tied to the cardiac cycle, enabling heart rate and vascular health monitoring.</p>
+            <button onclick="window.location.href='https://doi.org/10.1088/0967-3334/28/3/R01'">Learn More</button>
+        </div>
+        <div class="study-card fade-up">
+            <h3>Webcam Accuracy</h3>
+            <p>Webcams can detect pulse via remote photoplethysmography (rPPG) by analyzing subtle skin color changes caused by blood flow. Studies show accuracy within ±2–3 bpm under proper lighting (bright, stable sources like daylight). The green RGB channel is key, as hemoglobin absorbs green light strongly, amplifying pulsatile signals.</p>
+            <button onclick="window.location.href='https://doi.org/10.1364/OE.16.021434'">Learn More</button>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="fade-up">
+    <h2>Get In <span style="color: #0071e3;">Touch</span></h2>
+    <div class="contact-container">
+        <div class="contact-form fade-up">
+            <h3>Contact Form</h3>
+            <form>
+                <input type="text" class="form-control" placeholder="Your Name">
+                <input type="email" class="form-control" placeholder="Your Email">
+                <textarea class="form-control" rows="5" placeholder="Your Message"></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+        <div class="contact-info fade-up">
+            <h3>Contact Information</h3>
+            <div class="contact-item">
+                <i class="fas fa-envelope contact-icon"></i>
+                <div>team@naadisense.ai</div>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-twitter contact-icon"></i>
+                <div>@NaadiSenseAI</div>
+            </div>
+            <div class="team-members" style="margin-top: 2rem;">
+                <div class="team-member" style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                    <div class="team-image" style="width: 60px; height: 60px; border-radius: 50%; background-color: #d2d2d7; margin-right: 1rem; overflow: hidden;">
+                        <img src="Images\Madhav Gandhi.jpg" alt="Team Member 1" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="team-details">
+                        <div style="font-weight: 600; color: #1d1d1f;">Madhav Gandhi</div>
+                        <div style="font-size: 14px; color: #6e6e73;">Lead Developer</div>
+                        <div style="font-size: 14px; color: #6e6e73;">+91 9355790690</div>
+                    </div>
+                </div>
+                <div class="team-member" style="display: flex; align-items: center;">
+                    <div class="team-image" style="width: 60px; height: 60px; border-radius: 50%; background-color: #d2d2d7; margin-right: 1rem; overflow: hidden;">
+                        <img src="https://picsum.photos/60/60?random=2" alt="Team Member 2" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="team-details">
+                        <div style="font-weight: 600; color: #1d1d1f;">Aditya Bissht</div>
+                        <div style="font-size: 14px; color: #6e6e73;">Python Specialist</div>
+                        <div style="font-size: 14px; color: #6e6e73;">+91 9355790690</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <script>
+        // Tab Switching for Login/Signup
+        function showForm(formId) {
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.querySelector(`button[onclick="showForm('${formId}')"]`).classList.add('active');
+            document.getElementById(`${formId}-form`).classList.add('active');
+        }
+
+        // Webcam functionality
+        const video = document.getElementById('video');
+        let stream = null;
+
+        function startScan() {
+            if (stream) return;
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then((mediaStream) => {
+                    stream = mediaStream;
+                    video.srcObject = stream;
+                })
+                .catch((err) => {
+                    console.error("Error: ", err);
+                    alert("Please allow webcam access.");
+                });
+        }
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = document.querySelector(this.getAttribute('href'));
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Stop webcam on page unload
+        window.onbeforeunload = () => {
+            if (stream) stream.getTracks().forEach(track => track.stop());
+        };
+
+        // GSAP ScrollTrigger Animation for ECG and Fade-Up
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray(".fade-up").forEach(function (elem) {
+            ScrollTrigger.create({
+                trigger: elem,
+                start: "top 80%",
+                end: "bottom 20%",
+                markers: false,
+                onEnter: function () {
+                    elem.classList.add('active');
+                },
+                onEnterBack: function () {
+                    elem.classList.add('active');
+                }
+            });
+        });
+
+        // Initialize ECG animation
+        const ecgLine = document.querySelector('.ecg-line');
+        gsap.to(ecgLine, {
+            x: () => -(2000 - window.innerWidth) + 'px', // Move the full width of the SVG
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#ecg-section",
+                start: "top 80%",
+                end: "+=2000", // Extend the animation duration
+                scrub: true,
+                pin: false,
+                markers: false
+            }
+        });
+
+        // Ensure seamless looping by resetting position
+        ScrollTrigger.addEventListener("update", (self) => {
+            if (self.progress === 1) {
+                gsap.set(ecgLine, { x: 0 });
+                ScrollTrigger.refresh();
+            }
+        });
+    </script>
+</body>
+</html>
